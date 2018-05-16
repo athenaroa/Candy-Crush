@@ -5,12 +5,16 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity {
 
+    BoardView b;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        b = new BoardView(this);
+        setContentView(b);
     }
-
+/*
     @Override
     protected void onStart()
     {
@@ -46,5 +50,5 @@ public class MainActivity extends AppCompatActivity {
     {
         super.onDestroy();
     }
-
+*/
 }
