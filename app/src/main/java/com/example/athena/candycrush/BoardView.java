@@ -107,7 +107,22 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     protected void onDraw(Canvas c)
     {
         super.onDraw(c);
-        c.drawColor(Color.YELLOW); //Set the background to red
+        c.drawColor(Color.YELLOW); //Set the background to yellow
+
+        for(int i = 100; i < 1000; i += 100) //Width
+        {
+            for(int j = 500; j < 1400; j += 100) //Height
+            {
+                Rect dst=new Rect();
+                System.out.println("i = " + i + "\t" + "j = " + j);
+                dst.set(i,j ,i + 90,j + 90);
+                c.drawBitmap(redCandy, null,dst,null); //draw the image you putted in the folder drawable
+            }
+        }
+
+
+        /*
+
         Rect dstRed=new Rect();
         dstRed.set(100,100,400,400);
         c.drawBitmap(redCandy, null,dstRed,null); //draw the image you putted in the folder drawable
@@ -125,7 +140,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         Rect dstGreen2 = new Rect();
         dstGreen2.set(100, 700, 400, 1000);
         c.drawBitmap(greenCandy2,null,dstGreen2, null);
-
+        */
     }
 
 
