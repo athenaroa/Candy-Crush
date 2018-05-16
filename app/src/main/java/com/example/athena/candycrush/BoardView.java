@@ -16,8 +16,19 @@ import java.util.Random;
 public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     Bitmap redCandy =BitmapFactory.decodeResource(getResources(),R.drawable.redcandy); //Put an image called 'image' under the folder drawable
     Bitmap greenCandy =BitmapFactory.decodeResource(getResources(),R.drawable.greencandy);
-    Bitmap greenCandy2 =BitmapFactory.decodeResource(getResources(),R.drawable.greencandy);
     Bitmap blueCandy =BitmapFactory.decodeResource(getResources(),R.drawable.bluecandy);
+
+    Bitmap redJelly  =BitmapFactory.decodeResource(getResources(),R.drawable.redjelly);
+    Bitmap greenJelly  =BitmapFactory.decodeResource(getResources(),R.drawable.greenjelly);
+    Bitmap blueJelly  =BitmapFactory.decodeResource(getResources(),R.drawable.bluejelly);
+    Bitmap pinkJelly  =BitmapFactory.decodeResource(getResources(),R.drawable.pinkjelly);
+
+    Bitmap candyCorn  =BitmapFactory.decodeResource(getResources(),R.drawable.candycorn);
+    Bitmap candyCornOpen  =BitmapFactory.decodeResource(getResources(),R.drawable.candycornopen);
+
+
+
+
     float x;
     float y;
 
@@ -119,7 +130,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 dst.set(i,j ,i + 90,j + 90);
 
                 Random random = new Random();
-                int candy = random.nextInt(3);
+                int candy = random.nextInt(9);
                 switch(candy)
                 {
                     case(0):
@@ -131,37 +142,27 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                     case(2):
                         c.drawBitmap(greenCandy, null,dst,null);
                         break;
+                    case(3):
+                        c.drawBitmap(redJelly, null,dst,null);
+                        break;
+                    case(4):
+                        c.drawBitmap(blueJelly, null,dst,null);
+                        break;
+                    case(5):
+                        c.drawBitmap(greenJelly, null,dst,null);
+                        break;
+                    case(6):
+                        c.drawBitmap(pinkJelly, null,dst,null);
+                        break;
+                    case(7):
+                        c.drawBitmap(candyCorn, null,dst,null);
+                    case(8):
+                        c.drawBitmap(candyCornOpen, null,dst,null);
                 }
-
-
-
-
-
 
             }
         }
-
-
-        /*
-
-        Rect dstRed=new Rect();
-        dstRed.set(100,100,400,400);
-        c.drawBitmap(redCandy, null,dstRed,null); //draw the image you putted in the folder drawable
-
-
-        Rect dstGreen = new Rect();
-        dstGreen.set(500, 100, 800, 400);
-        c.drawBitmap(greenCandy,null,dstGreen, null);
-
-        Rect dstBlue = new Rect();
-        dstBlue.set(500, 700, 800, 1000);
-        c.drawBitmap(blueCandy,null,dstBlue, null);
-
-
-        Rect dstGreen2 = new Rect();
-        dstGreen2.set(100, 700, 400, 1000);
-        c.drawBitmap(greenCandy2,null,dstGreen2, null);
-        */
+        
     }
 
 
