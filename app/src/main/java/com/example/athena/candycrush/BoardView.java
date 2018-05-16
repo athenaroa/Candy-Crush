@@ -11,6 +11,8 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.util.Random;
+
 public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     Bitmap redCandy =BitmapFactory.decodeResource(getResources(),R.drawable.redcandy); //Put an image called 'image' under the folder drawable
     Bitmap greenCandy =BitmapFactory.decodeResource(getResources(),R.drawable.greencandy);
@@ -114,9 +116,28 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             for(int j = 500; j < 1400; j += 100) //Height
             {
                 Rect dst=new Rect();
-                System.out.println("i = " + i + "\t" + "j = " + j);
                 dst.set(i,j ,i + 90,j + 90);
-                c.drawBitmap(redCandy, null,dst,null); //draw the image you putted in the folder drawable
+
+                Random random = new Random();
+                int candy = random.nextInt(3);
+                switch(candy)
+                {
+                    case(0):
+                        c.drawBitmap(redCandy, null,dst,null);
+                        break;
+                    case(1):
+                        c.drawBitmap(blueCandy, null,dst,null);
+                        break;
+                    case(2):
+                        c.drawBitmap(greenCandy, null,dst,null);
+                        break;
+                }
+
+
+
+
+
+
             }
         }
 
