@@ -12,9 +12,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
-    Bitmap redCandy =BitmapFactory.decodeResource(getResources(),R.drawable.redCandy); //Put an image called 'image' under the folder drawable
-    Bitmap greenCandy =BitmapFactory.decodeResource(getResources(),R.drawable.greenCandy);
-    Bitmap blueCandy =BitmapFactory.decodeResource(getResources(),R.drawable.blueCandy);
+    Bitmap redCandy =BitmapFactory.decodeResource(getResources(),R.drawable.redcandy); //Put an image called 'image' under the folder drawable
+    Bitmap greenCandy =BitmapFactory.decodeResource(getResources(),R.drawable.greencandy);
+    Bitmap greenCandy2 =BitmapFactory.decodeResource(getResources(),R.drawable.greencandy);
+    Bitmap blueCandy =BitmapFactory.decodeResource(getResources(),R.drawable.bluecandy);
     float x;
     float y;
 
@@ -111,15 +112,20 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         dstRed.set(100,100,400,400);
         c.drawBitmap(redCandy, null,dstRed,null); //draw the image you putted in the folder drawable
 
-        /*
+
         Rect dstGreen = new Rect();
-        dstGreen.set(500, 100, 800, 800);
+        dstGreen.set(500, 100, 800, 400);
         c.drawBitmap(greenCandy,null,dstGreen, null);
 
         Rect dstBlue = new Rect();
-        dstGreen.set(500, 1000, 1100, 1100);
+        dstBlue.set(500, 700, 800, 1000);
         c.drawBitmap(blueCandy,null,dstBlue, null);
-        */
+
+
+        Rect dstGreen2 = new Rect();
+        dstGreen2.set(100, 700, 400, 1000);
+        c.drawBitmap(greenCandy2,null,dstGreen2, null);
+
     }
 
 
