@@ -12,7 +12,9 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
-    Bitmap mybitmap=BitmapFactory.decodeResource(getResources(),R.drawable.image2); //Put an image called 'image' under the folder drawable
+    Bitmap redCandy =BitmapFactory.decodeResource(getResources(),R.drawable.redCandy); //Put an image called 'image' under the folder drawable
+    Bitmap greenCandy =BitmapFactory.decodeResource(getResources(),R.drawable.greenCandy);
+    Bitmap blueCandy =BitmapFactory.decodeResource(getResources(),R.drawable.blueCandy);
     float x;
     float y;
 
@@ -23,6 +25,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         setFocusable(true);
         //Initialize game state variables and the game board variables
+
 
     }
 
@@ -62,26 +65,61 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //Update game state in response to events:
         //touch-down, touch-up, and touch-move
         //Perform operations to check if the touch event is a valid move
-        //If the move is vaid, take the necessary actions such as removing the matched candies
+        //If the move is valid, take the necessary actions such as removing the matched candies
         //and moving the candies above the eliminated row/column to their appropriate positions.
         x = e.getX();
         y = e.getY();
-        Canvas c = getHolder().lockCanvas();
-        Paint paint = new Paint();
-        paint.setColor(Color.BLUE);
-        c.drawRect(x,y,x+100,y+100,paint);
-        getHolder().unlockCanvasAndPost(c);
-        return true;
+
+
+        switch(e.getAction())
+        {
+            case (MotionEvent.ACTION_MOVE) :
+                Canvas c = getHolder().lockCanvas();
+                Paint paint = new Paint();
+                paint.setColor(Color.BLUE);
+                c.drawRect(x,y,x+100,y+100,paint);
+                getHolder().unlockCanvasAndPost(c);
+                return true;
+            case (MotionEvent.ACTION_UP):
+                Canvas d = getHolder().lockCanvas();
+                Paint paint2 = new Paint();
+                paint2.setColor(Color.BLACK);
+                d.drawRect(x,y,x+100,y+100,paint2);
+                getHolder().unlockCanvasAndPost(d);
+                return true;
+             case (MotionEvent.ACTION_DOWN):
+                 Canvas f = getHolder().lockCanvas();
+                 Paint paint3 = new Paint();
+                 paint3.setColor(Color.GREEN);
+                 f.drawRect(x,y,x+100,y+100,paint3);
+                 getHolder().unlockCanvasAndPost(f);
+                 return true;
+            default:
+                return super.onTouchEvent(e);
+
+
+        }
+
     }
 
     @Override
     protected void onDraw(Canvas c)
     {
         super.onDraw(c);
-        c.drawColor(Color.RED); //Set the background to red
-        Rect dst=new Rect();
-        dst.set(500,1500,1000,2000);
-        c.drawBitmap(mybitmap, null,dst,null); //draw the image you putted in the folder drawable
+        c.drawColor(Color.YELLOW); //Set the background to red
+        Rect dstRed=new Rect();
+        dstRed.set(100,100,400,400);
+        c.drawBitmap(redCandy, null,dstRed,null); //draw the image you putted in the folder drawable
+
+        /*
+        Rect dstGreen = new Rect();
+        dstGreen.set(500, 100, 800, 800);
+        c.drawBitmap(greenCandy,null,dstGreen, null);
+
+        Rect dstBlue = new Rect();
+        dstGreen.set(500, 1000, 1100, 1100);
+        c.drawBitmap(blueCandy,null,dstBlue, null);
+        */
     }
 
 
