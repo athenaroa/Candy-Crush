@@ -170,7 +170,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
         candy1 = board[yStart][xStart];
         System.out.println(" initial Candy1 = " + candy1);
-        candy2 = board[xEnd][yEnd];
+        candy2 = board[yEnd][xEnd];
         System.out.println(" initial Candy2 = " + candy2);
 
         temp = candy1;
@@ -291,10 +291,10 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 System.out.println("xEnd =" + xEnd);
                 System.out.println("yEnd =" + yEnd);
 
-                if( ((xStart != xEnd) && (yStart == yEnd)) || ((xStart == xEnd) && (yStart != yEnd)))
+                if( ((xStart != xEnd) && (yStart == yEnd)) || ((xStart == xEnd) && (yStart != yEnd))) //True if start and end is not the same box
                 {
                     System.out.println("First conditional True");
-                    if(board[yStart][xStart] != board[yEnd][xEnd])
+                    if(board[yStart][xStart] != board[yEnd][xEnd]) //True if candies at the start and end are not the same
                     {
                         System.out.println("Second conditional True");
                         switchCandies(xStart, yStart, xEnd, yEnd);
