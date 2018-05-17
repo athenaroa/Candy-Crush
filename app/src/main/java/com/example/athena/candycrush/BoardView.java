@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import java.lang.*;
 
 import java.util.Random;
 
@@ -22,6 +23,10 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     private int[][] board;
     private int numRow = 9;
     private int numColumn = 9;
+    final int candyWidth = 120;
+    int xStart, yStart, xEnd, yEnd;
+
+
     Bitmap redCandy;
     Bitmap greenCandy;
     Bitmap blueCandy;
@@ -41,7 +46,10 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //Initialize game state variables and the game board variables
 
         board = new int[9][9];
-
+        xStart = 0;
+        yStart = 0;
+        xEnd = 0;
+        yEnd = 0;
 
         redCandy = BitmapFactory.decodeResource(getResources(), R.drawable.redcandy); //Put an image called 'image' under the folder drawable
         greenCandy = BitmapFactory.decodeResource(getResources(), R.drawable.greencandy);
@@ -60,6 +68,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 Random random = new Random();
                 int c = random.nextInt(9);
                 board[i][j] = c;
+                System.out.println(c);
             }
         }
     }
@@ -90,6 +99,79 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //Write code here that needs to be executed just before the surface is destroyed
     }
 
+    public int getIndex(float pos)
+    {
+        int index;
+
+        if(pos < 120) {
+            index = 0;
+        }
+        else if((pos > 120) && (pos < 240))
+        {
+            index = 1;
+        }
+        else if((pos > 240) && (pos < 360))
+        {
+            index = 2;
+        }
+        else if((pos > 360) && (pos < 480))
+        {
+            index =  3;
+        }
+        else if((pos > 480) && (pos < 600))
+        {
+            index = 4;
+        }
+        else if((pos > 600) && (pos < 720))
+        {
+            index =  5;
+        }
+        else if((pos > 720) && (pos < 840))
+        {
+            index =  6;
+        }
+        else if((pos > 840) && (pos < 960))
+        {
+            index = 7;
+        }
+        else if((pos > 960) && (pos < 1080))
+        {
+            index = 8;
+        }
+        else
+        {
+            System.out.println("Not in valid range");
+            index = 100;
+        }
+        return index;
+    }
+
+    public void switchCandies(int xStart, int yStart, int xEnd, int yEnd)
+    {
+
+
+        int candy1, candy2, temp;
+
+        candy1 = board[yStart][xStart];
+        System.out.println(" initial Candy1 = " + candy1);
+        candy2 = board[xEnd][yEnd];
+        System.out.println(" initial Candy2 = " + candy2);
+
+        temp = candy1;
+        candy1 = candy2;
+        candy2 = temp;
+
+
+        board[yStart][xStart] = candy1;
+        System.out.println(" final Candy1 = " + board[yStart][xStart]);
+        board[yEnd][xEnd] = candy2;
+        System.out.println(" final Candy2 = " + board[yEnd][xEnd]);
+
+
+        System.out.println("Candies were switched");
+    }
+
+
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -100,47 +182,45 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //and moving the candies above the eliminated row/column to their appropriate positions.
         x = e.getX();
         y = e.getY();
-        
 
         switch (e.getAction()) {
             case (MotionEvent.ACTION_MOVE):
-                /*
-                Canvas c = getHolder().lockCanvas();
-                Paint paint = new Paint();
-                paint.setColor(Color.BLUE);
-                c.drawRect(x,y,x+20,y+20,paint);
-                getHolder().unlockCanvasAndPost(c);
-                */
-                return true;
 
+                //return true;
+                break;
             case (MotionEvent.ACTION_UP):
+                xEnd = getIndex(x);
+                yEnd = getIndex(y - 450);
 
-                /*
-                Canvas d = getHolder().lockCanvas();
-                Paint paint2 = new Paint();
-                paint2.setColor(Color.BLACK);
-                d.drawRect(x,y,x+20,y+20,paint2);
-                getHolder().unlockCanvasAndPost(d);
-                */
+                //return true;
+                break;
 
-
-                return true;
             case (MotionEvent.ACTION_DOWN):
-                /*
-                 Canvas f = getHolder().lockCanvas();
-                 Paint paint3 = new Paint();
-                 paint3.setColor(Color.GREEN);
-                 f.drawRect(x,y,x+20,y+20,paint3);
-                 getHolder().unlockCanvasAndPost(f);
-                */
+                xStart = getIndex(x);
+                yStart = getIndex(y - 450);
 
+                System.out.println("xStart =" + xStart);
+                System.out.println("yStart =" + yStart);
 
-                return true;
+                System.out.println("Candy" + board[yStart][xStart]);
+
+                //return true;
+                break;
             default:
                 return super.onTouchEvent(e);
         }
 
+        if((xStart != xEnd) && (yStart != yEnd))
+        {
+            switchCandies(xStart,yStart,xEnd,yEnd);
+
+            surfaceCreated(getHolder());
+        }
+
+
+        return true;
     }
+
 
     @Override
     protected void onDraw(Canvas c) {
@@ -157,7 +237,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             for (int j = 0; j < numColumn; j++) {
                 int index = board[i][j];
 
-                dst.set(j * 120, (i * 120) + 450, (j + 1) * 120, ((i + 1) * 120) + 450);
+                dst.set(j * candyWidth, (i * candyWidth) + 450, (j + 1) * candyWidth, ((i + 1) * candyWidth) + 450);
                 switch (index) {
                     case (0):
                         c.drawBitmap(redCandy, null, dst, null);
