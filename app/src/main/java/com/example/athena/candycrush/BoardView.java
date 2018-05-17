@@ -1,5 +1,6 @@
 package com.example.athena.candycrush;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -7,17 +8,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.view.MotionEventCompat;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import java.lang.*;
 
 import java.util.Random;
 
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
-    float x;
-    float y;
+    //float x;
+    //float y;
     int score = 0;
     private Bitmap[] candy;
     private int[][] board;
@@ -25,6 +31,15 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     private int numColumn = 9;
     final int candyWidth = 120;
     int xStart, yStart, xEnd, yEnd;
+
+
+    private int mActivePointerId = INVALID_POINTER_ID;
+    //public GestureDetector mScaleDetector;
+    private float mLastTouchX;
+    private float mLastTouchY;
+    public float mPosX;
+    public float mPosY;
+
 
 
     Bitmap redCandy;
@@ -44,6 +59,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
 
         //Initialize game state variables and the game board variables
+        //mScaleDetector = new GestureDetector(context);
 
         board = new int[9][9];
         xStart = 0;
@@ -153,9 +169,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         int candy1, candy2, temp;
 
         candy1 = board[yStart][xStart];
-        System.out.println(" initial Candy1 = " + candy1);
+       // System.out.println(" initial Candy1 = " + candy1);
         candy2 = board[xEnd][yEnd];
-        System.out.println(" initial Candy2 = " + candy2);
+        //System.out.println(" initial Candy2 = " + candy2);
 
         temp = candy1;
         candy1 = candy2;
@@ -163,14 +179,13 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         board[yStart][xStart] = candy1;
-        System.out.println(" final Candy1 = " + board[yStart][xStart]);
+        //System.out.println(" final Candy1 = " + board[yStart][xStart]);
         board[yEnd][xEnd] = candy2;
-        System.out.println(" final Candy2 = " + board[yEnd][xEnd]);
+        //System.out.println(" final Candy2 = " + board[yEnd][xEnd]);
 
 
         System.out.println("Candies were switched");
     }
-
 
 
     @Override
@@ -180,24 +195,114 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //Perform operations to check if the touch event is a valid move
         //If the move is valid, take the necessary actions such as removing the matched candies
         //and moving the candies above the eliminated row/column to their appropriate positions.
+
+        //mScaleDetector.onTouchEvent(e);
+
+
+        final int action = MotionEventCompat.getActionMasked(e);
+        /*
         x = e.getX();
         y = e.getY();
+        */
 
-        switch (e.getAction()) {
+        int move = 0; //L to R  = 1 , R to L = -1, U to D = 2, D to U = -2
+
+        switch (action) {
             case (MotionEvent.ACTION_MOVE):
+            {
+                //Find the index of the active pointer and fetch its position
+                final int pointerIndex = MotionEventCompat.findPointerIndex(e, mActivePointerId);
+                System.out.println("ACTION_MOVE");
+                System.out.println("pointerIndex = " + pointerIndex);
+
+                final float x = MotionEventCompat.getX(e, pointerIndex);
+                final float y = MotionEventCompat.getY(e, pointerIndex);
+
+
+                System.out.println("x = " + x + "y = " + y);
+
+                //Calculate the distance moved
+                final float dx = x - mLastTouchX;
+                final float dy = y - mLastTouchY;
+
+                mPosX += dx;
+                mPosY += dy;
+
+                invalidate();
+
+                //Remember this touch position for the next move event
+                mLastTouchX = x;
+                mLastTouchY = y;
+
+
+                /*
+                if(xEnd > xStart) {move = 1; }
+                else if ( xEnd < xStart) { move = -1;}
+                else if (yEnd > yStart) { move = 2;}
+                else if (yEnd < yStart) {move = -2;}
+                else {}
+
+
+                if(move == 1) {System.out.println("L to R");}
+                else if (move == -1) { System.out.println("R to L");}
+                else if (move == 2) { System.out.println("U to D");}
+                else if (move == -2){System.out.println("D to U");}
+                else {System.out.println("Error occured");}
 
                 //return true;
+                */
+
                 break;
+            }
             case (MotionEvent.ACTION_UP):
-                xEnd = getIndex(x);
-                yEnd = getIndex(y - 450);
-
-                //return true;
+            {
+                mActivePointerId = INVALID_POINTER_ID;
                 break;
+            }
+            case (MotionEvent.ACTION_CANCEL):
+            {
+                mActivePointerId = INVALID_POINTER_ID;
+                break;
+            }
+
+            case (MotionEvent.ACTION_POINTER_UP):
+            {
+                final int pointerIndex = MotionEventCompat.getActionIndex(e);
+                final int pointerId = MotionEventCompat.getPointerId(e,pointerIndex);
+
+                if(pointerId == mActivePointerId)
+                {
+                    //This was our active pointer going up. Choose a new
+                    //active pointer and adjust accordingly.
+                    final int newPointerIndex = pointerIndex == 0 ? 1: 0;
+                    mLastTouchX = MotionEventCompat.getX(e, newPointerIndex);
+                    mLastTouchY = MotionEventCompat.getY(e,newPointerIndex);
+                    mActivePointerId = MotionEventCompat.getPointerId(e,newPointerIndex);
+                }
+            }
+
 
             case (MotionEvent.ACTION_DOWN):
-                xStart = getIndex(x);
-                yStart = getIndex(y - 450);
+             {
+                final int pointIndex = MotionEventCompat.getActionIndex(e);
+                final float x = MotionEventCompat.getX(e, pointIndex);
+                final float y = MotionEventCompat.getY(e, pointIndex);
+
+                System.out.println("ACTION_DOWN");
+                System.out.println("x = " + x + "\t" + "y = " + y);
+
+                //Remember where we started (for dragging)
+                mLastTouchX = x;
+                mLastTouchY = y;
+                //Save the ID of this pointer (for dragging)
+                mActivePointerId = MotionEventCompat.getPointerId(e, 0);
+
+                System.out.println("mActivePointId = " + mActivePointerId);
+
+
+
+                xStart = getIndex(mLastTouchX);
+                yStart = getIndex(mLastTouchY - 450);
 
                 System.out.println("xStart =" + xStart);
                 System.out.println("yStart =" + yStart);
@@ -206,17 +311,22 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
                 //return true;
                 break;
-            default:
-                return super.onTouchEvent(e);
+            }
         }
-
+        /*
         if((xStart != xEnd) && (yStart != yEnd))
         {
-            switchCandies(xStart,yStart,xEnd,yEnd);
-
-            surfaceCreated(getHolder());
+            if(board[yStart][xStart] != board[yEnd][xEnd])
+            {
+        */
+        /*
+                switchCandies(xStart, yStart, xEnd, yEnd);
+                surfaceCreated(getHolder());
+         */
+         /*
+            }
         }
-
+        */
 
         return true;
     }
