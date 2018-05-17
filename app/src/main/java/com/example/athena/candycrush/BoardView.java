@@ -219,27 +219,30 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 final float y = MotionEventCompat.getY(e, pointerIndex);
 
 
-                System.out.println("x = " + x + "y = " + y);
+                System.out.println("x = " + x + "\t" + "y = " + y);
 
                 //Calculate the distance moved
                 final float dx = x - mLastTouchX;
                 final float dy = y - mLastTouchY;
 
+                System.out.println("dx = " + dx + "\t" + "dy = " + dy);
+
                 mPosX += dx;
                 mPosY += dy;
+                System.out.println("mPosX = " + mPosX + "\t" + "mPosY = " + mPosY);
+
 
                 invalidate();
 
                 //Remember this touch position for the next move event
                 mLastTouchX = x;
                 mLastTouchY = y;
+                
 
-
-                /*
-                if(xEnd > xStart) {move = 1; }
-                else if ( xEnd < xStart) { move = -1;}
-                else if (yEnd > yStart) { move = 2;}
-                else if (yEnd < yStart) {move = -2;}
+                if(dx > 0) {move = 1; }
+                else if ( dx < 0) { move = -1;}
+                else if (dy > 0) { move = 2;}
+                else if (dy < 0) {move = -2;}
                 else {}
 
 
@@ -250,7 +253,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 else {System.out.println("Error occured");}
 
                 //return true;
-                */
+
 
                 break;
             }
