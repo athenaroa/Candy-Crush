@@ -379,6 +379,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 if(r[i][j] == 1)
                 {
                     board[i][j] = 9;
+                    score ++;
+                    System.out.println("Score = " + score);
                 }
 
             }
