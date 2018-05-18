@@ -24,7 +24,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     int score = 0;
-    private Bitmap[] candy;
+    private int[][] remove;
     private int[][] board;
     private int numRow = 9;
     private int numColumn = 9;
@@ -60,6 +60,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
 
         board = new int[9][9];
+        remove = new int[9][9];
         xStart = 0;
         yStart = 0;
         xEnd = 0;
@@ -85,6 +86,15 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 System.out.println(c);
             }
         }
+
+        for(int i = 0; i < numRow; i++ )
+        {
+            for(int j = 0; j < numColumn; j++)
+            {
+                remove[i][j] = 0;
+            }
+        }
+
     }
 
     @Override
@@ -96,7 +106,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         Canvas c = holder.lockCanvas();
         this.onDraw(c);
         holder.unlockCanvasAndPost(c);
-
     }
 
     @Override
@@ -198,6 +207,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             if((board[endPosY][endPosX + 1] == candyMatch) && (board[endPosY][endPosX - 1] == candyMatch))
             {
                 match = true;
+                remove[endPosY][endPosX] = 1;
+                remove[endPosY][endPosX + 1] = 1;
+                remove[endPosY][endPosX - 1] = 1;
             }
         }
 
@@ -225,10 +237,11 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             if((board[endPosY + 1][endPosX] == candyMatch) && (board[endPosY - 1][endPosX] == candyMatch))
             {
                 match = true;
+                remove[endPosY][endPosX] = 1;
+                remove[endPosY + 1][endPosX] = 1;
+                remove[endPosY - 1][endPosX] = 1;
             }
         }
-
-
 
         if(match == true)
         {
@@ -256,6 +269,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 {
                         System.out.println("Left Horizontal Match");
                         match = true;
+                        remove[endPosY][endPosX] = 1;
+                        remove[endPosY][endPosX + 1] = 1;
+                        remove[endPosY][endPosX + 2] = 1;
                 }
 
 
@@ -272,6 +288,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             {
                 System.out.println("Right Horizontal Match");
                 match = true;
+                remove[endPosY][endPosX] = 1;
+                remove[endPosY][endPosX - 1] = 1;
+                remove[endPosY][endPosX - 2] = 1;
             }
 
             if(match != true)
@@ -287,6 +306,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             {
                 System.out.println("Top Vertical Match");
                 match = true;
+                remove[endPosY][endPosX] = 1;
+                remove[endPosY + 1][endPosX] = 1;
+                remove[endPosY + 2][endPosX] = 1;
             }
 
             if(match != true)
@@ -301,6 +323,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             {
                 System.out.println("Bottom Vertical Match");
                 match = true;
+                remove[endPosY][endPosX] = 1;
+                remove[endPosY - 1][endPosX] = 1;
+                remove[endPosY - 2][endPosX] = 1;
             }
 
             if(match != true)
@@ -311,8 +336,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         switchCandies(endPosX,endPosY,startPosX,startPosY);
         return match;
     }
-
-
 
     public boolean vaildMove(int xS, int yS, int xE, int yE)
     {
@@ -347,6 +370,22 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         return valid;
     }
 
+    public void removeCandy(int[][]r)
+    {
+        for(int i = 0; i < numRow; i++ )
+        {
+            for(int j = 0; j < numColumn; j++)
+            {
+                if(remove[i][j] == 1)
+                {
+                    board[i][j] = 9;
+                    remove[i][j] = 0;
+                }
+
+            }
+        }
+    }
+
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         //Update game state in response to events:
@@ -369,8 +408,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
                 final float x = MotionEventCompat.getX(e, pointerIndex);
                 final float y = MotionEventCompat.getY(e, pointerIndex);
-
-
                 //System.out.println("x = " + x + "\t" + "y = " + y);
 
                 //Calculate the distance moved
@@ -396,7 +433,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 else if (dy > 0) { move = 2;}
                 else if (dy < 0) {move = -2;}
                 else {}
-
 
                 if(move == 1) {System.out.println("L to R");}
                 else if (move == -1) { System.out.println("R to L");}
@@ -443,6 +479,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 if(vaildMove(xStart,yStart,xEnd,yEnd))
                 {
                     switchCandies(xStart,yStart,xEnd,yEnd);
+                    surfaceCreated(getHolder());
+                    removeCandy(remove);
                     surfaceCreated(getHolder());
                 }
 
@@ -519,6 +557,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         c.drawText("Score = " + score, 100, 300, s);
         Rect dst = new Rect();
 
+
+
         for (int i = 0; i < numRow; i++) {
             for (int j = 0; j < numColumn; j++) {
                 int index = board[i][j];
@@ -557,7 +597,13 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                         break;
                     case (8):
                         c.drawBitmap(candyCornOpen, null, dst, null);
-
+                        break;
+                    case(9):
+                        //c.drawBitmap(null, null, dst, null);
+                        Paint paint = new Paint();
+                        paint.setStyle(Paint.Style.FILL);
+                        paint.setColor(Color.YELLOW);
+                        c.drawRect(dst, paint);
                         break;
                 }
 
