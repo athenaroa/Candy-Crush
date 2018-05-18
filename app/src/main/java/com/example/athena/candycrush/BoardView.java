@@ -22,8 +22,7 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
-    //float x;
-    //float y;
+
     int score = 0;
     private Bitmap[] candy;
     private int[][] board;
@@ -34,7 +33,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
 
     private int mActivePointerId = INVALID_POINTER_ID;
-    //public GestureDetector mScaleDetector;
     private float mLastTouchX;
     private float mLastTouchY;
     public float mPosX;
@@ -59,7 +57,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         setFocusable(true);
 
         //Initialize game state variables and the game board variables
-        //mScaleDetector = new GestureDetector(context);
+
 
         board = new int[9][9];
         xStart = 0;
@@ -188,7 +186,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
 
-
     public boolean middleHorizontalMatch(int startPosX, int startPosY, int endPosX, int endPosY)
     {
         boolean match = false;
@@ -196,10 +193,14 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         int candyMatch = board[startPosY][startPosX];
         switchCandies(startPosX,startPosY,endPosX,endPosY);
 
-        if((board[endPosY][endPosX + 1] == candyMatch) && (board[endPosY][endPosX - 1] == candyMatch))
+        if((endPosX + 1 < numColumn) && (endPosX - 1 >= 0))
         {
-            match = true;
+            if((board[endPosY][endPosX + 1] == candyMatch) && (board[endPosY][endPosX - 1] == candyMatch))
+            {
+                match = true;
+            }
         }
+
         if(match == true)
         {
             System.out.println("Return true middleHorizontalMatch");
@@ -219,10 +220,15 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         int candyMatch = board[startPosY][startPosX];
         switchCandies(startPosX,startPosY,endPosX,endPosY);
 
-        if((board[endPosY + 1][endPosX] == candyMatch) && (board[endPosY - 1][endPosX] == candyMatch))
+        if((endPosY + 1 < numRow) && (endPosY - 1 >= 0))
         {
-            match = true;
+            if((board[endPosY + 1][endPosX] == candyMatch) && (board[endPosY - 1][endPosX] == candyMatch))
+            {
+                match = true;
+            }
         }
+
+
 
         if(match == true)
         {
@@ -235,6 +241,78 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         switchCandies(endPosX,endPosY,startPosX,startPosY);
         return match;
     }
+
+    public boolean edgeMatch(int startPosX, int startPosY, int endPosX, int endPosY)
+    {
+        boolean match = false;
+        int candyMatch = board[startPosY][startPosX];
+        switchCandies(startPosX,startPosY,endPosX,endPosY);
+
+
+        if( (endPosX + 1  < numColumn) && (endPosX + 2  < numColumn)) //true if within horizontal boundaries < 9
+        {
+                System.out.println("Within <9  horizontal boundaries");
+                if((board[endPosY][endPosX + 1] == candyMatch) && (board[endPosY][endPosX + 2] == candyMatch))
+                {
+                        System.out.println("Left Horizontal Match");
+                        match = true;
+                }
+
+
+                if(match != true)
+                {
+                    System.out.println("Return false Left Horizontal Match");
+                }
+
+        }
+        if( (endPosX - 1  >= 0) && (endPosX - 2  >= 0)) //true if within horizontal boundaries > 0
+        {
+            System.out.println("Within > 0  horizontal boundaries");
+            if((board[endPosY][endPosX - 1] == candyMatch) && (board[endPosY][endPosX - 2] == candyMatch))
+            {
+                System.out.println("Right Horizontal Match");
+                match = true;
+            }
+
+            if(match != true)
+            {
+                System.out.println("Return false Right Horizontal Match");
+            }
+
+        }
+        if( (endPosY + 1  < numRow) && (endPosX + 2  < numRow)) //true if within vertical boundaries < 9
+        {
+            System.out.println("Within <9  vertical boundaries");
+            if((board[endPosY + 1][endPosX] == candyMatch) && (board[endPosY + 2][endPosX] == candyMatch))
+            {
+                System.out.println("Top Vertical Match");
+                match = true;
+            }
+
+            if(match != true)
+            {
+                System.out.println("Return false Top Vertical Match");
+            }
+        }
+        if( (endPosY - 1 >= 0) && (endPosY - 2  >= 0)) //true if within vertical boundaries > 0
+        {
+            System.out.println("Within > 0  vertical boundaries");
+            if((board[endPosY - 1][endPosX] == candyMatch) && (board[endPosY - 2][endPosX] == candyMatch))
+            {
+                System.out.println("Bottom Vertical Match");
+                match = true;
+            }
+
+            if(match != true)
+            {
+                System.out.println("Return false Bottom Vertical Match");
+            }
+        }
+        switchCandies(endPosX,endPosY,startPosX,startPosY);
+        return match;
+    }
+
+
 
     public boolean vaildMove(int xS, int yS, int xE, int yE)
     {
@@ -253,7 +331,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 if( (changeX == 1) || (changeY == 1)) //True if candies are only one index apart from each other
                 {
                     System.out.println("Third conditional True");
-                    if(middleHorizontalMatch(xS,yS,xE,yE) || middleVeritcalMatch(xS,yS,xE,yE))
+                    if(middleHorizontalMatch(xS,yS,xE,yE) || middleVeritcalMatch(xS,yS,xE,yE) || edgeMatch(xS,yS,xE,yE))
                     {
                         System.out.println("fourth conditional True, switch should occur");
                         valid = true;
@@ -277,14 +355,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //If the move is valid, take the necessary actions such as removing the matched candies
         //and moving the candies above the eliminated row/column to their appropriate positions.
 
-        //mScaleDetector.onTouchEvent(e);
-
-
         final int action = MotionEventCompat.getActionMasked(e);
-        /*
-        x = e.getX();
-        y = e.getY();
-        */
 
         int move = 0; //L to R  = 1 , R to L = -1, U to D = 2, D to U = -2
 
@@ -331,10 +402,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 else if (move == -1) { System.out.println("R to L");}
                 else if (move == 2) { System.out.println("U to D");}
                 else if (move == -2){System.out.println("D to U");}
-                else {System.out.println("Error occured");}
-
-                //return true;
-
+                else {System.out.println("Error occurred");}
 
                 break;
             }
