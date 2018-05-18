@@ -376,15 +376,56 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         {
             for(int j = 0; j < numColumn; j++)
             {
-                if(remove[i][j] == 1)
+                if(r[i][j] == 1)
                 {
                     board[i][j] = 9;
-                    remove[i][j] = 0;
                 }
 
             }
         }
     }
+
+
+    public void fillBoard(int[][]r)
+    {
+        System.out.println("Goes into fillBoard Function");
+        for (int i = 8; i >= 0; i--) {
+            for (int j = 8; j >= 0; j--) {
+
+
+                Random random = new Random();
+                int c = random.nextInt(9);
+                int candyDrop;
+                int repeat = 1;
+
+                if( board[0][j] == 9) //if candy is at the top and removed
+                {
+                   System.out.println("Candy is on top");
+                   r[i][j] = 0;
+                   board[i][j] = c;
+                }
+                else if (board[i][j] == 9) {
+                    while(board[i][j] == 9)
+                    {
+                        candyDrop = board[i - repeat][j];
+                        if(candyDrop == 9)
+                        {
+                            repeat++;
+                        }
+                        else
+                        {
+                            board[i][j] = candyDrop;
+                            board[i - repeat][j] = 9;
+                            r[i][j] = 0;
+                        }
+
+                    }
+                }
+
+            }
+        }
+    }
+
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
@@ -481,6 +522,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                     switchCandies(xStart,yStart,xEnd,yEnd);
                     surfaceCreated(getHolder());
                     removeCandy(remove);
+                    surfaceCreated(getHolder());
+                    fillBoard(remove);
                     surfaceCreated(getHolder());
                 }
 
@@ -599,7 +642,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                         c.drawBitmap(candyCornOpen, null, dst, null);
                         break;
                     case(9):
-                        //c.drawBitmap(null, null, dst, null);
                         Paint paint = new Paint();
                         paint.setStyle(Paint.Style.FILL);
                         paint.setColor(Color.YELLOW);
