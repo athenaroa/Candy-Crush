@@ -194,7 +194,16 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         System.out.println("Candies were switched");
     }
 
-
+    public void clearRemove()
+    {
+        for(int i = 0; i < numRow; i++ )
+        {
+            for(int j = 0; j < numColumn; j++)
+            {
+                remove[i][j] = 0;
+            }
+        }
+    }
     public boolean middleHorizontalMatch(int startPosX, int startPosY, int endPosX, int endPosY)
     {
         boolean match = false;
@@ -212,6 +221,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 remove[endPosY][endPosX - 1] = 1;
             }
         }
+
 
         if(match == true)
         {
@@ -255,84 +265,116 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         return match;
     }
 
+
     public boolean edgeMatch(int startPosX, int startPosY, int endPosX, int endPosY)
     {
         boolean match = false;
         int candyMatch = board[startPosY][startPosX];
         switchCandies(startPosX,startPosY,endPosX,endPosY);
+        int count = 1;
+        int count2 = 1;
+        int count3 = 1;
+        int count4 = 1;
 
-
-        if( (endPosX + 1  < numColumn) && (endPosX + 2  < numColumn)) //true if within horizontal boundaries < 9
+        while((endPosX + count) < numColumn)
         {
-                System.out.println("Within <9  horizontal boundaries");
-                if((board[endPosY][endPosX + 1] == candyMatch) && (board[endPosY][endPosX + 2] == candyMatch))
+            System.out.println("Within <9  horizontal boundaries");
+            if(board[endPosY][endPosX + count] == candyMatch)
+            {
+                System.out.println("Left Horizontal Match");
+                remove[endPosY][endPosX] = 1;
+                remove[endPosY][endPosX + count] = 1;
+                count++;
+            }
+            else
+            {
+                if(count < 3)
                 {
-                        System.out.println("Left Horizontal Match");
-                        match = true;
-                        remove[endPosY][endPosX] = 1;
-                        remove[endPosY][endPosX + 1] = 1;
-                        remove[endPosY][endPosX + 2] = 1;
+                    for(int undo = 0; undo < count; undo++)
+                    {
+                        remove[endPosY][endPosX + undo] = 0;
+                    }
                 }
-
-
-                if(match != true)
-                {
-                    System.out.println("Return false Left Horizontal Match");
-                }
-
+                break;
+            }
         }
-        if( (endPosX - 1  >= 0) && (endPosX - 2  >= 0)) //true if within horizontal boundaries > 0
+
+
+        while((endPosX - count2) >= 0)
         {
             System.out.println("Within > 0  horizontal boundaries");
-            if((board[endPosY][endPosX - 1] == candyMatch) && (board[endPosY][endPosX - 2] == candyMatch))
+            if(board[endPosY][endPosX - count2] == candyMatch)
             {
                 System.out.println("Right Horizontal Match");
-                match = true;
                 remove[endPosY][endPosX] = 1;
-                remove[endPosY][endPosX - 1] = 1;
-                remove[endPosY][endPosX - 2] = 1;
+                remove[endPosY][endPosX - count2] = 1;
+                count2++;
             }
-
-            if(match != true)
+            else
             {
-                System.out.println("Return false Right Horizontal Match");
+                if(count2 < 3)
+                {
+                    for(int undo = 0; undo < count2; undo++)
+                    {
+                        remove[endPosY][endPosX - undo] = 0;
+                    }
+                }
+                break;
             }
-
         }
-        if( (endPosY + 1  < numRow) && (endPosX + 2  < numRow)) //true if within vertical boundaries < 9
+
+        while((endPosY + count3) < numRow)
         {
             System.out.println("Within <9  vertical boundaries");
-            if((board[endPosY + 1][endPosX] == candyMatch) && (board[endPosY + 2][endPosX] == candyMatch))
+            if(board[endPosY + count3][endPosX] == candyMatch)
             {
                 System.out.println("Top Vertical Match");
-                match = true;
                 remove[endPosY][endPosX] = 1;
-                remove[endPosY + 1][endPosX] = 1;
-                remove[endPosY + 2][endPosX] = 1;
+                remove[endPosY + count3][endPosX] = 1;
+                count3++;
             }
-
-            if(match != true)
+            else
             {
-                System.out.println("Return false Top Vertical Match");
+                if(count3 < 3)
+                {
+                    for(int undo = 0; undo < count3; undo++)
+                    {
+                        remove[endPosY + undo][endPosX] = 0;
+                    }
+                }
+                break;
             }
         }
-        if( (endPosY - 1 >= 0) && (endPosY - 2  >= 0)) //true if within vertical boundaries > 0
+
+        while((endPosY - count4) >= 0)
         {
             System.out.println("Within > 0  vertical boundaries");
-            if((board[endPosY - 1][endPosX] == candyMatch) && (board[endPosY - 2][endPosX] == candyMatch))
+            if(board[endPosY - count4][endPosX] == candyMatch)
             {
-                System.out.println("Bottom Vertical Match");
-                match = true;
+                System.out.println("Top Vertical Match");
                 remove[endPosY][endPosX] = 1;
-                remove[endPosY - 1][endPosX] = 1;
-                remove[endPosY - 2][endPosX] = 1;
+                remove[endPosY - count4][endPosX] = 1;
+                count4++;
             }
-
-            if(match != true)
+            else
             {
-                System.out.println("Return false Bottom Vertical Match");
+                if(count4 < 3)
+                {
+                    for(int undo = 0; undo < count4; undo++)
+                    {
+                        remove[endPosY - undo][endPosX] = 0;
+                    }
+                }
+                break;
             }
         }
+
+        if((count >= 3) || (count2 >= 3) || (count3 >= 3) || (count4 >= 3))
+        {
+            match = true;
+        }
+
+
         switchCandies(endPosX,endPosY,startPosX,startPosY);
         return match;
     }
@@ -356,7 +398,12 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                     System.out.println("Third conditional True");
                     if(middleHorizontalMatch(xS,yS,xE,yE) || middleVeritcalMatch(xS,yS,xE,yE) || edgeMatch(xS,yS,xE,yE))
                     {
-                        System.out.println("fourth conditional True, switch should occur");
+                        System.out.println("fourth conditional True, switch should occur with candy S to E");
+                        valid = true;
+                    }
+                    if(middleHorizontalMatch(xE,yE,xS,yS) || middleVeritcalMatch(xE,yE,xS,yS) || edgeMatch(xE,yE,xS,yS))
+                    {
+                        System.out.println("fourth conditional True, switch should occur with candy E to S");
                         valid = true;
                     }
 
