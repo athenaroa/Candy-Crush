@@ -194,16 +194,25 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //System.out.println("Candies were switched");
     }
 
-    public void clearRemove()
+    public boolean existingMatch()
     {
+        System.out.println("Went into existing match");
+        boolean match = false;
+
         for(int i = 0; i < numRow; i++ )
         {
             for(int j = 0; j < numColumn; j++)
             {
-                remove[i][j] = 0;
+                if(middleHorizontalMatch(i,j,i,j) || middleVeritcalMatch(i,j,i,j) || edgeMatch(i,j,i,j))
+                {
+                    match = true;
+                }
             }
         }
+        return match;
     }
+
+
     public boolean middleHorizontalMatch(int startPosX, int startPosY, int endPosX, int endPosY)
     {
         boolean match = false;
@@ -255,19 +264,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             match = true;
         }
 
-
-        /*
-        if((endPosX + 1 < numColumn) && (endPosX - 1 >= 0))
-        {
-            if((board[endPosY][endPosX + 1] == candyMatch) && (board[endPosY][endPosX - 1] == candyMatch))
-            {
-                match = true;
-                remove[endPosY][endPosX] = 1;
-                remove[endPosY][endPosX + 1] = 1;
-                remove[endPosY][endPosX - 1] = 1;
-            }
-        }
-        */
 
         if(match == true)
         {
@@ -664,6 +660,13 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                     surfaceCreated(getHolder());
                     fillBoard(remove);
                     surfaceCreated(getHolder());
+
+                }
+
+                if(existingMatch())
+                {
+                    removeCandy(remove);
+                    surfaceCreated(getHolder());
                 }
 
 
@@ -789,6 +792,10 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 }
 
             }
+        }
+        if(existingMatch())
+        {
+            removeCandy(remove);
         }
 
     }
