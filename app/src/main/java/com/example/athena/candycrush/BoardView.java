@@ -32,6 +32,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     int xStart, yStart, xEnd, yEnd;
     int end = 0;
     int maxScore = 150;
+    int flag = 0;
 
 
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -204,7 +205,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
     public boolean existingMatch()
     {
-        System.out.println("Went into existing match");
+
         boolean match = false;
 
         for(int i = 0; i < numRow; i++ )
@@ -214,6 +215,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 if(middleHorizontalMatch(i,j,i,j) || middleVeritcalMatch(i,j,i,j) || edgeMatch(i,j,i,j))
                 {
                     match = true;
+                    System.out.println("Existing match was found");
                 }
             }
         }
@@ -224,14 +226,14 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     public boolean endGame()
     {
         boolean r = true;
+        flag = 1;
 
-
-        if(score > maxScore)
+        if(score >= maxScore)
         {
             end = 2;
         }
-        else { }
-            /*
+        else {
+
             for (int i = 0; i < numRow; i++) {
                 for (int j = 0; j < numColumn; j++) {
                     if ((i + 1) < numRow) {
@@ -259,14 +261,15 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                     }
                 }
             }
-
         }
-        if( (score < 300) && (r != false))
+
+        if( (score < maxScore) && (r != false))
         {
             end = 1;
         }
+        flag = 0;
 
-        */
+
         return r;
     }
 
@@ -309,20 +312,21 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
         if((rightCount >= 1) && (leftCount >= 1))
         {
-            remove[endPosY][endPosX] = 1;
-
-            for(int i = 0; i <= rightCount; i++)
-            {
-                remove[endPosY][endPosX + rightCount] = 1;
-            }
-            for(int j = 0; j <= leftCount; j++)
-            {
-                remove[endPosY][endPosX - leftCount] = 1;
-            }
             match = true;
+            if(flag != 1) {
+                remove[endPosY][endPosX] = 1;
+
+                for (int i = 0; i <= rightCount; i++) {
+                    remove[endPosY][endPosX + rightCount] = 1;
+                }
+                for (int j = 0; j <= leftCount; j++) {
+                    remove[endPosY][endPosX - leftCount] = 1;
+                }
+            }
+
         }
 
-
+        /*
         if(match == true)
         {
             System.out.println("Return true middleHorizontalMatch");
@@ -331,6 +335,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         {
             System.out.println("Return false middleHorizontalMatch");
         }
+        */
         switchCandies(endPosX,endPosY,startPosX,startPosY);
         return match;
     }
@@ -372,17 +377,18 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
         if((upCount >= 1) && (downCount >= 1))
         {
-            remove[endPosY][endPosX] = 1;
-
-            for(int i = 0; i <= upCount; i++)
-            {
-                remove[endPosY - upCount][endPosX] = 1;
-            }
-            for(int j = 0; j <= downCount; j++)
-            {
-                remove[endPosY + downCount][endPosX] = 1;
-            }
             match = true;
+            if(flag != 1) {
+                remove[endPosY][endPosX] = 1;
+
+                for (int i = 0; i <= upCount; i++) {
+                    remove[endPosY - upCount][endPosX] = 1;
+                }
+                for (int j = 0; j <= downCount; j++) {
+                    remove[endPosY + downCount][endPosX] = 1;
+                }
+            }
+
         }
 
 
@@ -400,7 +406,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         */
-
+        /*
         if(match == true)
         {
             System.out.println("Return true middleVerticalMatch");
@@ -409,6 +415,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         {
             System.out.println("Return false middleVerticalMatch");
         }
+        */
         switchCandies(endPosX,endPosY,startPosX,startPosY);
         return match;
     }
@@ -428,7 +435,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         {
             if(board[endPosY][endPosX + (count+1)] == candyMatch)
             {
-                System.out.println("Left Horizontal Match");
+                //System.out.println("Left Horizontal Match");
                 count++;
             }
             else
@@ -441,7 +448,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         {
             if(board[endPosY][endPosX - (count2 + 1)] == candyMatch)
             {
-                System.out.println("Right Horizontal Match");
+                //System.out.println("Right Horizontal Match");
                 count2++;
             }
             else
@@ -455,7 +462,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             //System.out.println("Within <9  vertical boundaries");
             if(board[endPosY + (count3 + 1)][endPosX] == candyMatch)
             {
-                System.out.println("Top Vertical Match");
+                //System.out.println("Top Vertical Match");
                 count3++;
             }
             else
@@ -469,7 +476,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             //System.out.println("Within > 0  vertical boundaries");
             if(board[endPosY - (count4 +1)][endPosX] == candyMatch)
             {
-                System.out.println("Bottom Vertical Match");
+                //System.out.println("Bottom Vertical Match");
                 count4++;
             }
             else
@@ -480,43 +487,51 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
         if(count >= 2)
         {
-            remove[endPosY][endPosX] = 1;
-            for (int i = 0; i <= count; i++)
-            {
-                remove[endPosY][endPosX + i] = 1;
-                System.out.println("Left Vertical Match -- candy removed. i = " + i);
-            }
             match = true;
+            if(flag != 1) {
+                remove[endPosY][endPosX] = 1;
+                for (int i = 0; i <= count; i++) {
+                    remove[endPosY][endPosX + i] = 1;
+                    //System.out.println("Left Vertical Match -- candy removed. i = " + i);
+                }
+            }
+
         }
         if(count2 >= 2)
         {
-            remove[endPosY][endPosX] = 1;
-            for (int i = 0; i <= count2; i++)
-            {
-                remove[endPosY][endPosX - i] = 1;
-                System.out.println("Right Vertical Match -- candy removed. i = " + i);
-            }
             match = true;
+            if(flag != 1) {
+                remove[endPosY][endPosX] = 1;
+                for (int i = 0; i <= count2; i++) {
+                    remove[endPosY][endPosX - i] = 1;
+                    //System.out.println("Right Vertical Match -- candy removed. i = " + i);
+                }
+            }
+
         }
         if(count3 >= 2)
         {
-            remove[endPosY][endPosX] = 1;
-            for(int i = 0; i <= count3; i++)
-            {
-                remove[endPosY + i][endPosX] = 1;
-                System.out.println("Top Vertical Match -- candy removed. i = " + i);
-            }
             match = true;
+            if(flag != 1) {
+                remove[endPosY][endPosX] = 1;
+                for (int i = 0; i <= count3; i++) {
+                    remove[endPosY + i][endPosX] = 1;
+                    //System.out.println("Top Vertical Match -- candy removed. i = " + i);
+                }
+            }
+
         }
         if(count4 >= 2)
         {
-            remove[endPosY][endPosX] = 1;
-            for(int i = 0; i <= count4; i++)
-            {
-                remove[endPosY - i][endPosX] = 1;
-                System.out.println("Bottom Vertical Match -- candy removed. i = " + i);
-            }
             match = true;
+            if(flag != 1) {
+                remove[endPosY][endPosX] = 1;
+                for (int i = 0; i <= count4; i++) {
+                    remove[endPosY - i][endPosX] = 1;
+                    //System.out.println("Bottom Vertical Match -- candy removed. i = " + i);
+                }
+            }
+
         }
 
         switchCandies(endPosX,endPosY,startPosX,startPosY);
@@ -571,7 +586,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 {
                     board[i][j] = 9;
                     score ++;
-                    System.out.println("Score = " + score);
+                    //System.out.println("Score = " + score);
                 }
 
             }
@@ -593,7 +608,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
                 if( board[0][j] == 9) //if candy is at the top and removed
                 {
-                   System.out.println("Candy is on top");
+                   //System.out.println("Candy is on top");
                    r[i][j] = 0;
                    board[i][j] = c;
                 }
@@ -671,6 +686,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 else if (dy > 0) { move = 2;}
                 else if (dy < 0) {move = -2;}
                 else {}
+
 
                 if(move == 1) {System.out.println("L to R");}
                 else if (move == -1) { System.out.println("R to L");}
@@ -869,8 +885,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
             if(end == 1) //no more moves left
             {
-                //c.drawColor(Color.BLACK);
-                s.setColor(Color.BLACK);
+                c.drawColor(Color.BLACK);
+                s.setColor(Color.WHITE);
                 s.setTextSize(100);
                 c.drawText("NO MORE MOVES", 150, 700, s);
 
@@ -884,12 +900,12 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 c.drawColor(Color.BLACK);
                 s.setColor(Color.WHITE);
                 s.setTextSize(65);
-                c.drawText("YOU REACHED " + score + " POINTS!", 150, 700, s);
+                c.drawText("YOUR SCORE :" + score, 300, 700, s);
 
                 Paint s2 = new Paint();
                 s2.setColor(Color.WHITE);
-                s2.setTextSize(70);
-                //c.drawText("Click anywhere for New Game", 100, 900, s2);
+                s2.setTextSize(55);
+                c.drawText("CONGRATS! You reached the goal score!", 50, 900, s2);
             }
         }
 
