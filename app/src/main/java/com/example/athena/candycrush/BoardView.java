@@ -889,11 +889,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 s.setColor(Color.WHITE);
                 s.setTextSize(100);
                 c.drawText("NO MORE MOVES", 150, 700, s);
-
-                Paint s2 = new Paint();
-                s2.setColor(Color.WHITE);
-                s2.setTextSize(70);
-                //c.drawText("Click anywhere for New Game", 100, 900, s2);
             }
             else if(end == 2) //User reached the score goal
             {
