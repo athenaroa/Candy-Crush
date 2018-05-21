@@ -83,10 +83,16 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 Random random = new Random();
                 int c = random.nextInt(9);
                 board[i][j] = c;
-                System.out.println(c);
+                //System.out.println(c);
             }
         }
 
+        while((existingMatch()))
+        {
+            removeCandy(remove);
+            fillBoard(remove);
+        }
+        
         for(int i = 0; i < numRow; i++ )
         {
             for(int j = 0; j < numColumn; j++)
@@ -559,6 +565,9 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
             }
         }
+
+
+
     }
 
 
@@ -652,6 +661,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 System.out.println("xEnd =" + xEnd);
                 System.out.println("yEnd =" + yEnd);
 
+
                 if(vaildMove(xStart,yStart,xEnd,yEnd))
                 {
                     switchCandies(xStart,yStart,xEnd,yEnd);
@@ -666,6 +676,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 if(existingMatch())
                 {
                     removeCandy(remove);
+                    surfaceCreated(getHolder());
+                    fillBoard(remove);
                     surfaceCreated(getHolder());
                 }
 
@@ -793,9 +805,11 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
             }
         }
+
         if(existingMatch())
         {
             removeCandy(remove);
+            fillBoard(remove);
         }
 
     }
