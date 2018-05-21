@@ -30,6 +30,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     private int numColumn = 9;
     final int candyWidth = 120;
     int xStart, yStart, xEnd, yEnd;
+    int end = 0;
 
 
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -92,7 +93,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             removeCandy(remove);
             fillBoard(remove);
         }
-        
+
         for(int i = 0; i < numRow; i++ )
         {
             for(int j = 0; j < numColumn; j++)
@@ -216,6 +217,56 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             }
         }
         return match;
+    }
+
+
+    public boolean endGame()
+    {
+        boolean r = true;
+
+
+        if(score > 100)
+        {
+            end = 2;
+        }
+        else { }
+            /*
+            for (int i = 0; i < numRow; i++) {
+                for (int j = 0; j < numColumn; j++) {
+                    if ((i + 1) < numRow) {
+                        if (vaildMove(i, j, i + 1, j)) {
+                            r = false;
+                        }
+                    }
+
+                    if ((i - 1) >= 0) {
+                        if (vaildMove(i, j, i - 1, j)) {
+                            r = false;
+                        }
+                    }
+
+                    if ((j - 1) >= 0) {
+                        if (vaildMove(i, j, i, j - 1)) {
+                            r = false;
+                        }
+                    }
+
+                    if ((j + 1) < numColumn) {
+                        if (vaildMove(i, j, i, j + 1)) {
+                            r = false;
+                        }
+                    }
+                }
+            }
+
+        }
+        if( (score < 300) && (r != false))
+        {
+            end = 1;
+        }
+
+        */
+        return r;
     }
 
 
@@ -578,6 +629,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         //Perform operations to check if the touch event is a valid move
         //If the move is valid, take the necessary actions such as removing the matched candies
         //and moving the candies above the eliminated row/column to their appropriate positions.
+        surfaceCreated(getHolder());
 
         final int action = MotionEventCompat.getActionMasked(e);
 
@@ -681,7 +733,6 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                     surfaceCreated(getHolder());
                 }
 
-
                 break;
             }
             case (MotionEvent.ACTION_CANCEL):
@@ -746,8 +797,8 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     protected void onDraw(Canvas c) {
         super.onDraw(c);
-        c.drawColor(Color.YELLOW); //Set the background to yellow
 
+        c.drawColor(Color.YELLOW); //Set the background to yellow
         Paint s = new Paint();
         s.setColor(Color.BLACK);
         s.setTextSize(80);
@@ -811,6 +862,36 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
             removeCandy(remove);
             fillBoard(remove);
         }
+
+        if(endGame())
+        {
+
+            if(end == 1) //no more moves left
+            {
+                //c.drawColor(Color.BLACK);
+                s.setColor(Color.BLACK);
+                s.setTextSize(100);
+                c.drawText("NO MORE MOVES", 150, 700, s);
+
+                Paint s2 = new Paint();
+                s2.setColor(Color.WHITE);
+                s2.setTextSize(70);
+                //c.drawText("Click anywhere for New Game", 100, 900, s2);
+            }
+            else if(end == 2) //User reached the score goal
+            {
+                c.drawColor(Color.BLACK);
+                s.setColor(Color.WHITE);
+                s.setTextSize(65);
+                c.drawText("YOU REACHED " + score + " POINTS!", 150, 700, s);
+
+                Paint s2 = new Paint();
+                s2.setColor(Color.WHITE);
+                s2.setTextSize(70);
+                //c.drawText("Click anywhere for New Game", 100, 900, s2);
+            }
+        }
+
 
     }
 }
