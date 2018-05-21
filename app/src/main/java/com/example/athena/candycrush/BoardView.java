@@ -31,6 +31,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     final int candyWidth = 120;
     int xStart, yStart, xEnd, yEnd;
     int end = 0;
+    int maxScore = 150;
 
 
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -225,7 +226,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         boolean r = true;
 
 
-        if(score > 100)
+        if(score > maxScore)
         {
             end = 2;
         }
