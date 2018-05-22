@@ -33,6 +33,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     int end = 0;
     int maxScore = 150;
     int flag = 0;
+    int firstStart = 0;
 
 
     private int mActivePointerId = INVALID_POINTER_ID;
@@ -585,7 +586,15 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
                 if(r[i][j] == 1)
                 {
                     board[i][j] = 9;
-                    score ++;
+                    if(firstStart == 0)
+                    {
+                        System.out.println("First start, score should be 0");
+                    }
+                    else
+                    {
+                        score ++;
+                    }
+
                     //System.out.println("Score = " + score);
                 }
 
@@ -813,6 +822,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
 
     @Override
     protected void onDraw(Canvas c) {
+
         super.onDraw(c);
 
         c.drawColor(Color.YELLOW); //Set the background to yellow
@@ -820,6 +830,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
         s.setColor(Color.BLACK);
         s.setTextSize(80);
         c.drawText("Score = " + score, 100, 300, s);
+        firstStart = 1;
         Rect dst = new Rect();
 
 
