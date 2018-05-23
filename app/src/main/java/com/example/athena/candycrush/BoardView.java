@@ -31,7 +31,7 @@ public class BoardView extends SurfaceView implements SurfaceHolder.Callback {
     final int candyWidth = 120;
     int xStart, yStart, xEnd, yEnd;
     int end = 0;
-    int maxScore = 150;
+    int maxScore = 200;
     int flag = 0;
     int firstStart = 0;
 
